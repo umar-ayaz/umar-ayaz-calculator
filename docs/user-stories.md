@@ -4,11 +4,13 @@ Roles are defined in `app-roles.md`. Jobs are defined in
 `jobs-to-be-done.md`. Story numbers are fixed and are referenced by the code
 and the tests.
 
-Scope frozen at four input fields, thirteen error messages, a monthly payment
-figure, and a balance owed figure for interest only. Stories S-15 to S-21
-record what was deliberately left out. S-22 is in scope and sits after S-14
-rather than at the end, because the numbers are fixed but the order follows
-meaning.
+Scope was frozen at four input fields, thirteen error messages, a monthly
+payment figure, and a balance owed figure for interest only. S-17 (the month
+by month table) and S-23 (the explanation panel) were added to it later, at the
+owner's request. Stories S-15, S-16 and S-18 to S-21 record what was
+deliberately left out. S-17 and S-22 are in scope and sit after S-14 rather
+than in number order, and S-23 follows S-22, because the numbers are fixed but
+the order follows meaning.
 
 "Calculate" below means the person has asked for a result, either by
 activating the Calculate control or by pressing Enter in any field. The
@@ -28,10 +30,11 @@ Serves: J-1, J-6
 Acceptance criteria
 
 - Given the calculator is open, when it first loads, then exactly four inputs
-  are present, labelled "Loan amount", "Annual interest rate", "Term" and
-  "Repayment type".
+  are present: three text fields labelled "Loan amount", "Annual interest
+  rate" and "Term", and a group of radio buttons labelled "Repayment type".
 - Given the calculator is open, when it first loads, then "Repayment type"
-  offers "Repayment" and "Interest only", and "Repayment" is already selected.
+  offers the radio buttons "Repayment" and "Interest only", and "Repayment" is
+  already selected.
 - Given the calculator is open, when it first loads, then a "Calculate"
   control is present.
 - Given the calculator is open, when it first loads, then no monthly payment
@@ -105,7 +108,12 @@ Acceptance criteria
 - Given 1000, 0.001, 40 and "Repayment", when I calculate, then the monthly
   payment shown is £2.08.
 - Given any valid input with type "Repayment", when I calculate, then the
-  monthly payment is the only figure shown.
+  monthly payment is the only headline figure shown, and no "Balance owed at
+  the end of the term" is shown. The month by month table (S-17) is not a
+  headline figure.
+- Given any valid input with type "Repayment", when the monthly payment is
+  shown, then it is the amount of every payment except the last. The last
+  payment can differ so that the loan clears exactly (S-17).
 
 Status: Not implemented
 
@@ -463,6 +471,91 @@ Status: Not implemented
 
 ---
 
+## S-17 — See every monthly payment broken down
+
+As a borrower, I want a table of every monthly payment showing how much of it
+is interest, how much of it repays the loan, and what is still owed
+afterwards, so that I can see how the monthly figure is made up and why the
+debt falls slowly at first.
+
+Roles: R-1, R-2
+Serves: J-5, J-6
+
+Acceptance criteria
+
+The table
+
+- Given a valid calculation, when the result is shown, then a table is shown
+  below it with one row for each monthly payment, so the number of rows is the
+  term in years multiplied by 12. A 25 year term has 300 rows.
+- Given the table, when I look at the page, then every row is on the page. It
+  is not split into pages and it is not inside a box of its own that scrolls.
+- Given the table, when I read its headings, then the columns are, in this
+  order, "Month", "Payment", "Interest", "Capital repaid" and "Balance
+  remaining".
+- Given the table, when I read the "Month" column, then it counts 1, 2, 3 and
+  so on up to the last payment.
+- Given the table, when I read any money figure in it, then it is written as
+  money (S-14) and never contains "NaN", "Infinity", "-0.00" or a minus sign
+  (S-11).
+
+How each row is worked out
+
+- Given the first row, when I read it, then the balance it starts from is the
+  loan amount.
+- Given any row, when I read it, then "Interest" is the balance at the start of
+  that month multiplied by the annual rate and divided by 12, rounded half up
+  to the penny; "Capital repaid" is "Payment" less "Interest"; and "Balance
+  remaining" is the balance at the start of the month less "Capital repaid".
+- Given the same row, when "Balance remaining" is read, then it is the balance
+  the next row starts from.
+
+Repayment
+
+- Given 200000, 5, 25 and "Repayment", when I calculate, then the table has
+  300 rows and the first row is a payment of £1,169.18, interest of £833.33,
+  capital repaid of £335.85 and a balance remaining of £199,664.15.
+- Given the same inputs, when I read the last row, then it is a payment of
+  £1,169.20, interest of £4.85, capital repaid of £1,164.35 and a balance
+  remaining of £0.00.
+- Given "Repayment", when I read the "Payment" column, then every payment
+  except the last is the monthly payment shown in the result (S-2). The last
+  payment is the balance still owed plus that month's interest, so the loan
+  clears to exactly £0.00 and not to a few pence over or under.
+- Given 100000, 0, 3 and "Repayment", when I calculate, then the table has 36
+  rows, the first 35 payments are £2,777.78, the last is £2,777.70, interest is
+  £0.00 in every row and the last balance remaining is £0.00.
+- Given any valid input with "Repayment", when the "Payment" column is added
+  up, then the total equals the loan amount plus all the interest in the
+  "Interest" column, exactly. For 200000, 5, 25 it is £350,754.02.
+- Given any valid input with "Repayment", when I read the "Balance remaining"
+  column, then no figure in it is negative.
+
+Interest only
+
+- Given 200000, 5, 25 and "Interest only", when I calculate, then the table has
+  300 rows and every row, including the last, is a payment of £833.33, interest
+  of £833.33, capital repaid of £0.00 and a balance remaining of £200,000.00.
+- Given "Interest only", when I read the last row, then its balance remaining
+  is the same as the "Balance owed at the end of the term" in the result.
+- Given 200000, 0, 25 and "Interest only", when I calculate, then every row is
+  a payment of £0.00, interest of £0.00, capital repaid of £0.00 and a balance
+  remaining of £200,000.00.
+
+Clearing and access
+
+- Given a table is shown, when the result is removed or replaced (S-5, S-9,
+  S-10), then the table is removed or replaced with it. A table is never shown
+  beside a different result, and never beside an error message.
+- Given a screen reader, when it reaches the table, then it is read as a table
+  with a caption and column headings, so each figure is read with its column.
+- Given a table appears, when a screen reader is in use, then the table is not
+  read out. What is announced is the monthly payment (S-13), as before.
+
+Status: Not implemented
+
+---
+
 ## S-22 — Start clean every time
 
 As a borrower, I want the calculator to open empty every time, so that I am
@@ -481,6 +574,50 @@ Acceptance criteria
   nothing I typed has been kept.
 - Given the calculator is used, when it is finished with, then nothing is
   written to the browser or to any server.
+
+Status: Not implemented
+
+---
+
+## S-23 — Understand how the calculator works
+
+As a borrower, I want a short explanation next to the calculator, with an
+example, so that I understand what it does and what the two repayment types
+mean before I rely on the figures.
+
+Roles: R-1, R-2
+Serves: J-4, J-5
+
+Acceptance criteria
+
+- Given the calculator is open, when it first loads, then an explanation panel
+  is shown to the right of the form on a wide screen and below the form on a
+  narrow one.
+- Given the panel, when I read it, then it says in plain words that the
+  calculator works out the monthly payment from the loan amount, the annual
+  interest rate, the term and the repayment type.
+- Given the panel, when I read it, then it says that with "Repayment" each
+  payment covers the interest and also pays off part of the loan, so nothing is
+  owed at the end; and that with "Interest only" each payment covers the
+  interest alone, so the whole loan is still owed at the end.
+- Given the panel, when I read it, then it gives the simplest example: £120,000
+  at 0% over 10 years with "Repayment" is £1,000.00 a month, because £120,000
+  shared over 120 months is £1,000.00 each.
+- Given the panel, when I read it, then it compares the two types on £200,000
+  at 5% over 25 years: "Repayment" is £1,169.18 a month with nothing owed at the
+  end, and "Interest only" is £833.33 a month with £200,000.00 still owed at
+  the end.
+- Given the panel, when I read it, then it says what each column of the month
+  by month table (S-17) means.
+- Given the example figures, when I change any input or calculate, then they do
+  not change. They are fixed text, they are written as money (S-14), and they
+  match the figures in S-2, S-3 and S-4.
+- Given the example figures, when I load the calculator or when an error is
+  shown, then they are not a result. The criteria in S-1, S-9, S-10 and S-11
+  that say no figure is shown apply to the result and the table, not to this
+  panel.
+- Given the panel, when I use the keyboard, then it adds nothing to the Tab
+  order (S-12): it is text to read, not controls.
 
 Status: Not implemented
 
@@ -529,27 +666,6 @@ Acceptance criteria
   shown is £350,754.02.
 - Given type "Interest only", when I calculate, then it is unambiguous whether
   the total paid includes the balance owed at the end.
-
-Status: Not implemented
-
----
-
-## S-17 — Month by month breakdown
-
-As a borrower, I want to see what each monthly payment is made up of, so that
-I can see how little of an early payment reduces the debt.
-
-Roles: R-1
-Serves: J-6
-
-Acceptance criteria
-
-- Given 200000, 5, 25 and "Repayment", when I view the breakdown, then the
-  first payment is shown as £833.33 interest and £335.85 capital.
-- Given a breakdown is shown, when I read the last row, then the closing
-  balance is exactly £0.00.
-- Given a breakdown is shown, when the payments are added up, then they equal
-  the loan amount plus the total interest exactly.
 
 Status: Not implemented
 

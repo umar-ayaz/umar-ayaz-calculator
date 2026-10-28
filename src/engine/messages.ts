@@ -21,3 +21,14 @@ export const MESSAGES = {
     range: "Term must be between 1 and 40 years.",
   },
 } as const;
+
+/**
+ * The summary read out to a screen reader when a calculation is refused
+ * (S-13): the count, then every message in the order given, for example
+ * "3 errors. Loan amount must be a number. Enter an interest rate. …".
+ */
+export function errorSummary(messages: readonly string[]): string {
+  const count = messages.length;
+  const noun = count === 1 ? "error" : "errors";
+  return `${count} ${noun}. ${messages.join(" ")}`;
+}

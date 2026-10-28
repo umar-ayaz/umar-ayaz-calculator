@@ -8,7 +8,7 @@ export type Calculation =
 // thousandths of a percent (r), so the monthly rate is r / (1000 * 100 * 12),
 // which is r / 1,200,000. Keeping it as that fraction, rather than as a
 // decimal, is what lets everything below be done in exact whole numbers.
-const RATE_SCALE = 1_200_000n;
+export const RATE_SCALE = 1_200_000n;
 
 /**
  * Rounding rule: round half up to the nearest penny, once, on the final
@@ -17,7 +17,7 @@ const RATE_SCALE = 1_200_000n;
  * exact half penny up. Nothing is rounded before this point, and the payment
  * is never rounded up just to make sure the loan is cleared.
  */
-function roundHalfUp(numerator: bigint, denominator: bigint): bigint {
+export function roundHalfUp(numerator: bigint, denominator: bigint): bigint {
   return (2n * numerator + denominator) / (2n * denominator);
 }
 

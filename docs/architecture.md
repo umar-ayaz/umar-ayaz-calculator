@@ -8,8 +8,9 @@ ever seem to disagree. Who it is for is in `docs/app-roles.md`.
 
 A mortgage repayment calculator that runs in the browser. You enter a loan
 amount, a rate, a term and a repayment type, and it gives you the monthly
-payment, plus the balance still owed at the end for an interest-only loan.
-It is for people checking what a loan would cost them each month: repayment
+payment, plus the balance still owed at the end for an interest-only loan, and
+a table of every monthly payment split into interest and capital, with what is
+still owed after it. A panel beside the form explains how it works. It is for people checking what a loan would cost them each month: repayment
 borrowers (R-1) and interest-only borrowers (R-2).
 
 To run it, clone the repo, then `npm install` and `npm run dev`. Everything
@@ -54,15 +55,21 @@ financial figures could be sent or kept.
 
 ```
 src/
-  engine/   parse, validate, calculate, messages   pure, unit tested
+  engine/   parse, validate, calculate,            pure, unit tested
+            schedule, messages
   format.ts pence → "£1,169.18"                    pure, unit tested
-  ui/       reads the form, shows results and messages
+  ui/       app.ts    reads the form, shows results, messages, focus
+            table.ts  builds the month by month table
+            panel.ts  the fixed explanation text
+  style.css the stylesheet
   main.ts   starts the UI
 ```
 
 Text from the form goes into the engine and comes back as either numbers or
-the exact messages from the stories. `format.ts` writes those numbers as
-money, and `ui/` puts the result on the page.
+the exact messages from the stories. `calculate` gives the monthly payment (and
+the balance owed for interest only), and `schedule` gives one row for each
+month: payment, interest, capital repaid and balance remaining. `format.ts`
+writes those numbers as money, and `ui/` puts the result on the page.
 
 **Why the engine is kept pure.** If a figure is ever wrong, the mistake is in
 the engine, so that is the part that has to be provably right. With no DOM,
@@ -82,6 +89,16 @@ The UI is kept thin enough that checking it by hand is realistic.
   half up to the penny, once, at the end. I checked this against the
   ordinary floating-point formula on 2,000,000 random inputs and they
   differed once, by a penny. The floating-point answer was the wrong one.
+- **The month by month schedule.** Each month's interest is the opening
+  balance at the monthly rate, rounded half up to the penny, and that rounded
+  figure is carried forward. The monthly payment is rounded once, so on a
+  repayment loan every payment is the monthly payment except the last, which
+  is the balance still owed plus that month's interest, so the loan clears to
+  exactly £0.00. That last payment can differ from the others, by a few
+  pence on an ordinary loan and by much more on a long loan at a high rate. A
+  payment is never more than what is owed: if the rounded payments clear the
+  loan early, the clearing payment is smaller and the months after it show
+  £0.00.
 - **Story numbers and message text are fixed.** Tests cite S-numbers and
   assert the messages word for word. Renumbering a story or rewording a
   message means changing the tests too.
@@ -93,7 +110,9 @@ The UI is kept thin enough that checking it by hand is realistic.
 Vitest unit tests cover the engine and the formatter. Each test is named by
 the story and criterion it proves. A sweep across all accepted inputs checks
 that no result is ever negative, fractional or more than a penny away from
-the ordinary formula. The page itself is tested by hand against the stories.
+the ordinary formula. A second sweep checks every row of every schedule: whole,
+non-negative pence, interest to the penny, the balance carried forward, the loan
+cleared exactly, and the payments adding up to the loan plus the interest. The page itself is tested by hand against the stories.
 
 ## Deploy
 
