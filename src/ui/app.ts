@@ -53,7 +53,9 @@ function textField(
 export function mount(root: HTMLElement): void {
   const inputs = {} as Record<Field, HTMLInputElement>;
   const errors = {} as Record<Field, HTMLElement>;
-  const form = el("form", { noValidate: true });
+  // autocomplete="off" on the form stops a browser putting typed values back
+  // after a reload (S-22).
+  const form = el("form", { noValidate: true, autocomplete: "off" });
 
   for (const { field, label, prefix, suffix } of FIELDS) {
     const parts = textField(field, label, prefix, suffix);
@@ -62,11 +64,14 @@ export function mount(root: HTMLElement): void {
     form.append(parts.row);
   }
 
-  const radio = (value: string, text: string, checked: boolean) =>
+  // defaultChecked sets the checked attribute, which is what a form reset
+  // returns to. Setting only the checked property would leave nothing
+  // selected after a reset.
+  const radio = (value: string, text: string, defaultChecked: boolean) =>
     el(
       "label",
       { className: "radio" },
-      el("input", { type: "radio", name: "repaymentType", value, checked }),
+      el("input", { type: "radio", name: "repaymentType", value, defaultChecked }),
       text,
     );
   form.append(
@@ -111,6 +116,16 @@ export function mount(root: HTMLElement): void {
     inputs[field].removeAttribute("aria-invalid");
   }
 
+  function readForm(): RawInputs {
+    const type = new FormData(form).get("repaymentType");
+    return {
+      loanAmount: inputs.loanAmount.value,
+      interestRate: inputs.interestRate.value,
+      term: inputs.term.value,
+      repaymentType: type === "interestOnly" ? "interestOnly" : "repayment",
+    };
+  }
+
   function figure(label: string, pence: number): HTMLElement {
     return el("p", {}, `${label} `, el("strong", {}, formatMoney(pence)));
   }
@@ -127,14 +142,7 @@ export function mount(root: HTMLElement): void {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     clearResult();
-    const raw: RawInputs = {
-      loanAmount: inputs.loanAmount.value,
-      interestRate: inputs.interestRate.value,
-      term: inputs.term.value,
-      repaymentType: form.querySelector<HTMLInputElement>("input[name=repaymentType]:checked")!
-        .value as RawInputs["repaymentType"],
-    };
-    const checked = validate(raw);
+    const checked = validate(readForm());
 
     if (!checked.ok) {
       const messages: string[] = [];
