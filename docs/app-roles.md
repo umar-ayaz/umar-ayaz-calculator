@@ -9,15 +9,20 @@ both role numbers.
 
 ## R-1 — Repayment borrower
 
-A repayment borrower is someone looking at a capital-and-interest mortgage,
-who already knows roughly how much they need to borrow and now needs to know
-what it would cost them every month. They can enter a loan amount, an annual
-interest rate, a term in years and a repayment type, choose Repayment, and
-read back a single monthly payment figure, working entirely from the keyboard
-and hearing the result or any error announced by a screen reader. They must
-never see an invalid figure accepted, an empty space where a figure should be,
-a result left on screen next to an error message, or an error message that
-fails to name both the field and the fix.
+A repayment borrower is someone looking at a loan repaid as capital and
+interest, whether or not interest is charged: a capital-and-interest mortgage,
+or an interest-free loan such as one from family. Each monthly payment pays
+down the capital along with any interest, so nothing is owed once the term
+ends. They already know roughly how much they need to borrow and now need to
+know what it would cost them every month. They can enter a loan amount, an
+annual interest rate, a term in years and a repayment type, choose Repayment,
+and read back a single monthly payment figure, working entirely from the
+keyboard and hearing the result or any error announced by a screen reader.
+They must never be refused a monthly payment because the rate is 0%, because
+an interest-free loan is still a loan they have to repay. They must never be
+shown a balance owed at the end of the term, because on a repayment loan the
+last payment clears the debt, and a balance beside the monthly figure would
+suggest capital is left to find.
 
 ## R-2 — Interest-only borrower
 

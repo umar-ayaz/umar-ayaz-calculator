@@ -46,8 +46,9 @@ Acceptance criteria
   trailing spaces, then the spaces are ignored and the value is accepted.
 - Given any of the three text fields, when I enter a value written with a
   non-ASCII minus sign such as "−5", then it is read as if an ordinary minus
-  sign had been typed, and the value is judged on its range rather than
-  rejected as not a number.
+  sign had been typed and gets exactly the message an ordinary minus sign
+  would get, rather than being rejected as not a number. S-6, S-7 and S-8 say
+  which message that is for each field.
 - Given the loan amount field, when I look at it, then the "£" is shown as
   part of the field and does not have to be typed.
 - Given the interest rate field, when I look at it, then the "%" is shown as
@@ -61,9 +62,9 @@ Status: Not implemented
 
 ## S-2 — See the monthly payment on a repayment mortgage
 
-As a repayment borrower, I want one monthly payment figure for a
-capital-and-interest mortgage, so that I can tell whether it fits my monthly
-budget.
+As a repayment borrower, I want one monthly payment figure for a loan repaid
+as capital and interest, whether or not interest is charged, so that I can
+tell whether it fits my monthly budget.
 
 Roles: R-1
 Serves: J-1, J-6

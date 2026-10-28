@@ -60,7 +60,7 @@ answer that was never right in the first place.
 
 ## J-8 — Agree a schedule on an interest-free loan
 
-Role: R-1
+Role: R-1, R-2
 
 When money is being lent to me at no interest, by family for instance, I want
 to know what the monthly repayment would be, so I can agree a schedule
