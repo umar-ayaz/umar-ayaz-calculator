@@ -40,15 +40,40 @@ Acceptance criteria
   accepted as 200000.
 - Given the loan amount field, when I enter "200,000.50", then the value is
   accepted as 200000.50.
+- Given the loan amount field, when I enter "2,00,000", then the commas are
+  ignored wherever they are and the value is accepted as 200000.
+- Given the interest rate or term field, when I enter a value containing a
+  comma such as "5,5", then it is not a number and that field's "must be a
+  number" message is shown.
+- Given the loan amount field, when I enter a "£" anywhere other than at the
+  start or straight after a minus sign, such as "200£000", then the message
+  shown is "Loan amount must be a number."
+- Given the interest rate field, when I enter a "%" anywhere other than at the
+  end, such as "%5", then the message shown is
+  "Interest rate must be a number."
+- Given the loan amount is only "£" or the interest rate is only "%", when I
+  calculate, then that field's "must be a number" message is shown, not its
+  "Enter a …" message.
 - Given the interest rate field, when I enter "5%", then the value is accepted
   as 5.
 - Given any of the three text fields, when I enter a value with leading or
   trailing spaces, then the spaces are ignored and the value is accepted.
-- Given any of the three text fields, when I enter a value written with a
-  non-ASCII minus sign such as "−5", then it is read as if an ordinary minus
-  sign had been typed and gets exactly the message an ordinary minus sign
-  would get, rather than being rejected as not a number. S-6, S-7 and S-8 say
-  which message that is for each field.
+- Given any of the three text fields, when I enter a value with nothing before
+  the decimal point such as ".5", or nothing after it such as "5.", then it is
+  read by its value, as 0.5 and 5.
+- Given the term field, when I enter "25.0", then it is accepted as 25. Only
+  the value is judged, not how it was typed.
+- Given the loan amount field, when I enter "200000.500", or the interest rate
+  field, when I enter "5.1250", then zeros at the end of the decimal part are
+  not counted as decimal places and the value is accepted.
+- Given any of the three text fields, when I enter a value written with the
+  minus sign "−" (U+2212), such as "−5", then it is read as if an ordinary
+  minus sign had been typed and gets exactly the message an ordinary minus
+  sign would get, rather than being rejected as not a number. S-6, S-7 and S-8
+  say which message that is for each field.
+- Given any of the three text fields, when I enter a value starting with an
+  en dash such as "–5", then the dash is not read as a minus sign and that
+  field's "must be a number" message is shown.
 - Given the loan amount field, when I look at it, then the "£" is shown as
   part of the field and does not have to be typed.
 - Given the interest rate field, when I look at it, then the "%" is shown as
@@ -229,6 +254,12 @@ Acceptance criteria
   not treated as intent to enter a negative rate.
 - Given the interest rate is "5.1255" and also above 25, when I calculate,
   then the decimal places message is shown and not the range message.
+- Given the interest rate is "-0.5555", when I calculate, then the message
+  shown is "Interest rate can have at most 3 decimal places." and not the
+  negative message.
+- Given the interest rate is wrong in more than one way, when I calculate,
+  then the one message shown is the first that applies in this order: empty,
+  not a number, too many decimal places, negative, above 25.
 
 Status: Not implemented
 
@@ -317,9 +348,12 @@ Acceptance criteria
   monthly payment or balance owed figure is visible.
 - Given an error message is shown, when I correct the field and calculate,
   then the message is removed and the new figure is shown.
-- Given an error message is shown for a field, when I change that field to
-  another invalid value, then the message updates to the one matching the new
-  value.
+- Given an error message is shown for a field, when I edit that field, then
+  that field's message is removed straight away, and no new message is shown
+  for it until I calculate. Nothing is checked while I type.
+- Given error messages are shown for more than one field, when I edit one of
+  those fields, then only that field's message is removed. The others stay
+  until I calculate.
 
 Status: Not implemented
 
@@ -395,6 +429,13 @@ Acceptance criteria
   field is reported as invalid and not only shown in a different colour.
 - Given an error message is read out of context, when I hear it, then it names
   the field it belongs to.
+- Given I calculate with one or more invalid inputs, when the messages appear,
+  then focus moves to the first field with a message and a summary of every
+  message is read out, for example "3 errors. Loan amount must be a number.
+  Enter an interest rate. Term must be between 1 and 40 years."
+- Given the summary has been read out, when I look at the screen, then it is
+  not shown. It is heard, not seen, and the messages beside each field are
+  what is on screen.
 
 Status: Not implemented
 
