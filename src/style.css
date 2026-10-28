@@ -15,12 +15,15 @@ h1 { margin: 0 0 1.5rem; }
 .field label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
 .box { display: flex; align-items: center; gap: 0.5rem; }
 .box input { flex: 1; font: inherit; padding: 0.5rem; border: 1px solid #8a94a3; border-radius: 4px; }
+.box input[aria-invalid="true"] { border-color: var(--error); border-width: 2px; }
 fieldset { border: 1px solid var(--line); border-radius: 4px; }
 .radio { display: block; padding: 0.15rem 0; }
 .error { color: var(--error); margin: 0.25rem 0 0; }
 button { font: inherit; padding: 0.55rem 1.5rem; color: #fff; background: var(--accent); border: 0; border-radius: 4px; cursor: pointer; }
+:focus-visible { outline: 3px solid #f2a900; outline-offset: 2px; }
 .result { margin-top: 1.5rem; font-size: 1.25rem; }
 .result p { margin: 0.25rem 0; }
 
 
 
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

@@ -1,4 +1,5 @@
 import { calculate } from "../engine/calculate";
+import { errorSummary } from "../engine/messages";
 import { validate, type Field, type RawInputs } from "../engine/validate";
 import { formatMoney } from "../format";
 
@@ -32,6 +33,9 @@ function textField(
     autocomplete: "off",
   });
   const error = el("p", { id: `${field}-error`, className: "error" });
+  // The message is read as part of the field (S-13). It is empty until there
+  // is something to say, and an empty description reads as nothing.
+  input.setAttribute("aria-describedby", error.id);
   const affix = (text: string) => {
     const span = el("span", { className: "affix" }, text);
     span.setAttribute("aria-hidden", "true");
@@ -45,7 +49,7 @@ function textField(
   return { row, input, error };
 }
 
-/** Builds the form inside `root` and wires it up. Holds no calculation logic. */
+/** Builds the page inside `root` and wires it up. Holds no calculation logic. */
 export function mount(root: HTMLElement): void {
   const inputs = {} as Record<Field, HTMLInputElement>;
   const errors = {} as Record<Field, HTMLElement>;
@@ -76,8 +80,29 @@ export function mount(root: HTMLElement): void {
     el("button", { type: "submit" }, "Calculate"),
   );
 
+  // The headline figures are a polite live region, so a new payment is read
+  // out on its own (S-13).
   const result = el("div", { className: "result" });
-  root.append(el("h1", {}, "Mortgage calculator"), form, result);
+  result.setAttribute("role", "status");
+  result.setAttribute("aria-atomic", "true");
+  // Heard, not seen (S-13): the summary of every error message.
+  const summary = el("div", { className: "visually-hidden" });
+  summary.setAttribute("role", "alert");
+
+  root.append(
+    el("h1", {}, "Mortgage calculator"),
+    el("section", {}, form, result, summary),
+  );
+
+  function clearResult(): void {
+    result.replaceChildren();
+    summary.replaceChildren();
+  }
+
+  function clearError(field: Field): void {
+    errors[field].textContent = "";
+    inputs[field].removeAttribute("aria-invalid");
+  }
 
   function figure(label: string, pence: number): HTMLElement {
     return el("p", {}, `${label} `, el("strong", {}, formatMoney(pence)));
@@ -87,13 +112,14 @@ export function mount(root: HTMLElement): void {
   // once, and an edited field loses its own message. Nothing is checked until
   // Calculate (S-5, S-10).
   form.addEventListener("input", (event) => {
-    result.replaceChildren();
+    clearResult();
     const edited = FIELDS.find(({ field }) => field === (event.target as HTMLElement).id);
-    if (edited) errors[edited.field].textContent = "";
+    if (edited) clearError(edited.field);
   });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
+    clearResult();
     const raw: RawInputs = {
       loanAmount: inputs.loanAmount.value,
       interestRate: inputs.interestRate.value,
@@ -101,14 +127,28 @@ export function mount(root: HTMLElement): void {
       repaymentType: form.querySelector<HTMLInputElement>("input[name=repaymentType]:checked")!
         .value as RawInputs["repaymentType"],
     };
-
-    result.replaceChildren();
     const checked = validate(raw);
-    for (const { field } of FIELDS) {
-      errors[field].textContent = checked.ok ? "" : (checked.errors[field] ?? "");
-    }
-    if (!checked.ok) return;
 
+    if (!checked.ok) {
+      const messages: string[] = [];
+      let first: HTMLInputElement | undefined;
+      for (const { field } of FIELDS) {
+        const message = checked.errors[field];
+        if (message === undefined) {
+          clearError(field);
+          continue;
+        }
+        errors[field].textContent = message;
+        inputs[field].setAttribute("aria-invalid", "true");
+        messages.push(message);
+        first ??= inputs[field];
+      }
+      summary.textContent = errorSummary(messages);
+      first?.focus();
+      return;
+    }
+
+    for (const { field } of FIELDS) clearError(field);
     const outcome = calculate(checked.inputs);
     result.append(figure("Monthly payment", outcome.monthlyPence));
     if (outcome.type === "interestOnly") {
