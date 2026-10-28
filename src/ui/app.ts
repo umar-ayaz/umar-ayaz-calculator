@@ -1,7 +1,9 @@
 import { calculate } from "../engine/calculate";
 import { errorSummary } from "../engine/messages";
+import { schedule } from "../engine/schedule";
 import { validate, type Field, type RawInputs } from "../engine/validate";
 import { formatMoney } from "../format";
+import { scheduleTable } from "./table";
 
 const FIELDS: { field: Field; label: string; prefix?: string; suffix?: string }[] = [
   { field: "loanAmount", label: "Loan amount", prefix: "£" },
@@ -86,10 +88,11 @@ export function mount(root: HTMLElement): void {
   );
 
   // The headline figures are a polite live region, so a new payment is read
-  // out on its own (S-13).
+  // out on its own (S-13). The table sits outside it so it is not read out.
   const result = el("div", { className: "result" });
   result.setAttribute("role", "status");
   result.setAttribute("aria-atomic", "true");
+  const tableHost = el("div", { className: "table-host" });
   // Heard, not seen (S-13): the summary of every error message.
   const summary = el("div", { className: "visually-hidden" });
   summary.setAttribute("role", "alert");
@@ -97,6 +100,7 @@ export function mount(root: HTMLElement): void {
   root.append(
     el("h1", {}, "Mortgage calculator"),
     el("section", {}, form, result, summary),
+    tableHost,
   );
 
   // The summary is set a moment after it is cleared, so a screen reader sees
@@ -108,6 +112,7 @@ export function mount(root: HTMLElement): void {
   function clearResult(): void {
     window.clearTimeout(summaryTimer);
     result.replaceChildren();
+    tableHost.replaceChildren();
     summary.replaceChildren();
   }
 
@@ -172,5 +177,6 @@ export function mount(root: HTMLElement): void {
     if (outcome.type === "interestOnly") {
       result.append(figure("Balance owed at the end of the term", outcome.balanceOwedPence));
     }
+    tableHost.append(scheduleTable(schedule(checked.inputs)));
   });
 }

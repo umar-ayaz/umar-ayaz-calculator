@@ -25,5 +25,11 @@ button { font: inherit; padding: 0.55rem 1.5rem; color: #fff; background: var(--
 .result p { margin: 0.25rem 0; }
 
 
+.table-host { margin-top: 2rem; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+caption { text-align: left; font-weight: 600; margin-bottom: 0.5rem; }
+th, td { padding: 0.35rem 0.75rem; border-bottom: 1px solid var(--line); text-align: right; }
+th[scope="row"], thead th:first-child { text-align: left; }
+thead th { background: var(--panel); }
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
