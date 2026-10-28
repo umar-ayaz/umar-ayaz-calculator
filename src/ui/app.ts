@@ -94,7 +94,14 @@ export function mount(root: HTMLElement): void {
     el("section", {}, form, result, summary),
   );
 
+  // The summary is set a moment after it is cleared, so a screen reader sees
+  // it change and reads identical text again on a repeated Calculate (S-13).
+  // The timer is cancelled by any clear, so a late summary can never appear
+  // after the person has edited the form.
+  let summaryTimer: number | undefined;
+
   function clearResult(): void {
+    window.clearTimeout(summaryTimer);
     result.replaceChildren();
     summary.replaceChildren();
   }
@@ -143,7 +150,10 @@ export function mount(root: HTMLElement): void {
         messages.push(message);
         first ??= inputs[field];
       }
-      summary.textContent = errorSummary(messages);
+      const text = errorSummary(messages);
+      summaryTimer = window.setTimeout(() => {
+        summary.textContent = text;
+      }, 50);
       first?.focus();
       return;
     }
