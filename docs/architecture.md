@@ -101,11 +101,11 @@ Vercel, building from the GitHub repository on every push to `main`. Every
 pull request gets its own preview URL. Vercel's build command runs the
 typecheck and the tests before building, so a failing test stops a deploy.
 
-Vercel was chosen over GitHub Pages for three reasons:
+Vercel was chosen over GitHub Pages for two reasons:
 
 - Each pull request gets a preview without any setup.
-- Vercel's free plan works with a private repository, and Pages does not.
-- There is no workflow file of our own to maintain.
+- There is nothing to maintain in the repo for it, such as a workflow file.
 
-The cost is one more account, held by the maintainer. Anyone running the
-calculator still needs nothing.
+It runs on Vercel's free Hobby plan, which is for non-commercial use. This
+project is non-commercial. The cost is one more account, held by the
+maintainer. Anyone running the calculator still needs nothing.
