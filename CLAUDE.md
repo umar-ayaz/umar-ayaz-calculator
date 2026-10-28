@@ -10,7 +10,8 @@ I own the spec and the testing. You own the implementation.
 
 - `docs/user-stories.md` is the spec. Every change implements a numbered story.
   If a change isn't covered by a story, stop and tell me instead of inventing
-  scope.
+  scope. The exception is project setup and deployment: they aren't features,
+  so they have no story.
 - Don't write app code until we've agreed the approach.
 - If something is my call, ask. Don't guess, and don't quietly work around a
   constraint you disagree with — say you disagree.
