@@ -83,6 +83,15 @@ export function mount(root: HTMLElement): void {
     return el("p", {}, `${label} `, el("strong", {}, formatMoney(pence)));
   }
 
+  // Any change to the form, text or repayment type, removes the figures at
+  // once, and an edited field loses its own message. Nothing is checked until
+  // Calculate (S-5, S-10).
+  form.addEventListener("input", (event) => {
+    result.replaceChildren();
+    const edited = FIELDS.find(({ field }) => field === (event.target as HTMLElement).id);
+    if (edited) errors[edited.field].textContent = "";
+  });
+
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const raw: RawInputs = {
