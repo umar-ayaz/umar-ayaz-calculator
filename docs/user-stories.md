@@ -28,10 +28,11 @@ Serves: J-1, J-6
 Acceptance criteria
 
 - Given the calculator is open, when it first loads, then exactly four inputs
-  are present, labelled "Loan amount", "Annual interest rate", "Term" and
-  "Repayment type".
+  are present: three text fields labelled "Loan amount", "Annual interest
+  rate" and "Term", and a group of radio buttons labelled "Repayment type".
 - Given the calculator is open, when it first loads, then "Repayment type"
-  offers "Repayment" and "Interest only", and "Repayment" is already selected.
+  offers the radio buttons "Repayment" and "Interest only", and "Repayment" is
+  already selected.
 - Given the calculator is open, when it first loads, then a "Calculate"
   control is present.
 - Given the calculator is open, when it first loads, then no monthly payment
