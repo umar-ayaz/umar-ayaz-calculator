@@ -17,6 +17,13 @@ activating the Calculate control or by pressing Enter in any field. The
 calculator never works out a result on its own; nothing is validated and
 nothing is shown until the person asks.
 
+Status says what the owner has seen working in a browser, not only what has
+been built. "Implemented" means every criterion has been seen working. "Built,
+partly checked" means it is built and some criteria have been seen; the lines
+under it say which have and which have not. "Built, not yet checked" means it
+is built and nothing has been seen yet. "Not implemented" means it is not
+built.
+
 ---
 
 ## S-1 — Enter the four inputs
@@ -84,7 +91,11 @@ Acceptance criteria
 - Given the term field, when I look at it, then "years" is shown as part of
   the field.
 
-Status: Not implemented
+Status: Built, partly checked
+Seen: the four inputs, labels and "£", "%" and "years" shown in the fields,
+the load state, and the loan and rate input forms.
+Not yet seen: "5,5" in the term; spaces around a rate or term; ".5" and "5."
+in the loan and term; "−" (U+2212) in the rate and term.
 
 ---
 
@@ -115,7 +126,7 @@ Acceptance criteria
   shown, then it is the amount of every payment except the last. The last
   payment can differ so that the loan clears exactly (S-17).
 
-Status: Not implemented
+Status: Implemented
 
 ---
 
@@ -143,7 +154,7 @@ Acceptance criteria
 - Given a result is shown for "Repayment", when I switch to "Interest only"
   and calculate, then the balance owed figure appears.
 
-Status: Not implemented
+Status: Implemented
 
 ---
 
@@ -169,7 +180,7 @@ Acceptance criteria
 - Given a rate of 0, when I calculate, then the figure shown is never blank,
   "NaN" or "Infinity".
 
-Status: Not implemented
+Status: Implemented
 
 ---
 
@@ -192,7 +203,7 @@ Acceptance criteria
 - Given a result is shown, when I change a value and do not calculate, then
   the figure is removed from the screen until I calculate again.
 
-Status: Not implemented
+Status: Implemented
 
 ---
 
@@ -228,7 +239,7 @@ Acceptance criteria
   calculate, then the message for the loan amount is "Enter a loan amount."
   and not the range message.
 
-Status: Not implemented
+Status: Implemented
 
 ---
 
@@ -269,7 +280,9 @@ Acceptance criteria
   then the one message shown is the first that applies in this order: empty,
   not a number, too many decimal places, negative, above 25.
 
-Status: Not implemented
+Status: Built, partly checked
+Seen: every message and the order they apply in.
+Not yet seen: "−0.5" written with a non-ASCII minus sign.
 
 ---
 
@@ -301,7 +314,9 @@ Acceptance criteria
 - Given the term is "25.5" and also above 40, when I calculate, then the whole
   number message is shown and not the range message.
 
-Status: Not implemented
+Status: Built, partly checked
+Seen: every message.
+Not yet seen: "−5" written with a non-ASCII minus sign.
 
 ---
 
@@ -324,7 +339,7 @@ Acceptance criteria
 - Given every input is valid, when I calculate, then no message is shown for
   any field.
 
-Status: Not implemented
+Status: Implemented
 
 ---
 
@@ -363,7 +378,7 @@ Acceptance criteria
   those fields, then only that field's message is removed. The others stay
   until I calculate.
 
-Status: Not implemented
+Status: Implemented
 
 ---
 
@@ -387,7 +402,7 @@ Acceptance criteria
 - Given any result, when I read it, then no figure is partially computed or
   left over from a previous calculation.
 
-Status: Not implemented
+Status: Implemented
 
 ---
 
@@ -413,7 +428,10 @@ Acceptance criteria
 - Given the calculator is open, when I use the keyboard only, then nothing is
   reachable by pointer alone.
 
-Status: Not implemented
+Status: Built, partly checked
+Seen: focus moves to the first field with a message.
+Not yet seen: Tab order, Enter in each field, the arrow keys on the radio
+buttons, and nothing being reachable by pointer alone.
 
 ---
 
@@ -445,7 +463,10 @@ Acceptance criteria
   not shown. It is heard, not seen, and the messages beside each field are
   what is on screen.
 
-Status: Not implemented
+Status: Built, not yet checked
+Not yet seen: the announcements, the summary read out and a message read with
+its field, all of which need a screen reader, and the invalid state in the
+accessibility tree. The focus move was seen and is under S-12.
 
 ---
 
@@ -467,7 +488,7 @@ Acceptance criteria
 - Given a balance owed of 200000, when it is shown, then it reads
   "£200,000.00".
 
-Status: Not implemented
+Status: Implemented
 
 ---
 
@@ -552,7 +573,12 @@ Clearing and access
 - Given a table appears, when a screen reader is in use, then the table is not
   read out. What is announced is the monthly payment (S-13), as before.
 
-Status: Not implemented
+Status: Built, partly checked
+Seen: the rows, columns and figures for both repayment types, and the table
+going when the result does.
+Not yet seen: the table read as a table, and not read out when it appears (both
+need a screen reader), and the payments adding up to the loan plus interest,
+which the tests check but nobody has added up by eye.
 
 ---
 
@@ -575,7 +601,12 @@ Acceptance criteria
 - Given the calculator is used, when it is finished with, then nothing is
   written to the browser or to any server.
 
-Status: Not implemented
+Status: Built, partly checked
+Seen: a reload clears the fields, selects Repayment and shows no figure or
+message, in the browser used so far (not Firefox).
+Not yet seen: the same reload in Firefox, which can restore typed values;
+closing the page and opening it again; and nothing being written to browser
+storage.
 
 ---
 
@@ -619,7 +650,9 @@ Acceptance criteria
 - Given the panel, when I use the keyboard, then it adds nothing to the Tab
   order (S-12): it is text to read, not controls.
 
-Status: Not implemented
+Status: Built, partly checked
+Seen: the panel, its wording, its position and its fixed figures.
+Not yet seen: the panel adding nothing to the Tab order.
 
 ---
 
