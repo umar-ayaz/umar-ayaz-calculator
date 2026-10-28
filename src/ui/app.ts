@@ -3,6 +3,7 @@ import { errorSummary } from "../engine/messages";
 import { schedule } from "../engine/schedule";
 import { validate, type Field, type RawInputs } from "../engine/validate";
 import { formatMoney } from "../format";
+import { explanationPanel } from "./panel";
 import { scheduleTable } from "./table";
 
 const FIELDS: { field: Field; label: string; prefix?: string; suffix?: string }[] = [
@@ -99,7 +100,7 @@ export function mount(root: HTMLElement): void {
 
   root.append(
     el("h1", {}, "Mortgage calculator"),
-    el("section", {}, form, result, summary),
+    el("div", { className: "layout" }, el("section", {}, form, result, summary), explanationPanel()),
     tableHost,
   );
 

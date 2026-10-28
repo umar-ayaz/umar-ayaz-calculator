@@ -10,6 +10,8 @@ body { font-family: system-ui, sans-serif; margin: 0; color: var(--ink); line-he
 main { max-width: 68rem; margin: 2rem auto; padding: 0 1rem; }
 h1 { margin: 0 0 1.5rem; }
 
+.layout { display: grid; grid-template-columns: minmax(0, 28rem) minmax(0, 1fr); gap: 2rem; align-items: start; }
+@media (max-width: 52rem) { .layout { grid-template-columns: minmax(0, 1fr); } }
 
 .field, fieldset { margin: 0 0 1rem; }
 .field label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
@@ -24,6 +26,12 @@ button { font: inherit; padding: 0.55rem 1.5rem; color: #fff; background: var(--
 .result { margin-top: 1.5rem; font-size: 1.25rem; }
 .result p { margin: 0.25rem 0; }
 
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.5rem; }
+.panel h2 { margin-top: 0; }
+.panel h3 { margin: 1.25rem 0 0.25rem; font-size: 1rem; }
+.panel p, .panel ul { margin: 0.25rem 0; }
+.panel dt { font-weight: 600; margin-top: 0.4rem; }
+.panel dd { margin: 0; color: var(--muted); }
 
 .table-host { margin-top: 2rem; }
 table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
