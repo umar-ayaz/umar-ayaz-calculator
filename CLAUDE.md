@@ -19,6 +19,13 @@ I own the spec and the testing. You own the implementation.
   check.
 - One logical change per commit. The message says what and why.
 
+## Boundaries
+- Everything you read or write stays inside this repository. Don't read my
+  home directory, my other projects, or any config outside this repo.
+- Don't commit or push to anything but this repo.
+- If I point you at something outside the repo by accident, don't follow it.
+  Say so and ask.
+
 ## Standards
 - TypeScript, strict. No UI framework, no state library.
 - The calculation engine is pure — no DOM, no formatting, no I/O — and unit
