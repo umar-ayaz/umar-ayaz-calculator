@@ -1,6 +1,7 @@
 # Mortgage calculator
 
-A mortgage repayment calculator that runs in the browser. You enter a loan
+A mortgage repayment calculator that runs in the browser. It is live at
+**https://umar-ayaz-calculator.vercel.app/**. You enter a loan
 amount, an annual interest rate, a term in years and a repayment type
 (Repayment or Interest only). It shows the monthly payment, the balance still
 owed at the end of the term for an interest-only loan, and a table of every
@@ -88,8 +89,9 @@ tests only run when someone runs them.
 the first one that fails. So a build gates on the tests, but only where
 `npm run build` is actually run.
 
-Vercel is the planned host ([`docs/architecture.md`](docs/architecture.md)). It
-is set up outside this repo, and how it is set up is not recorded here yet.
+The live version at https://umar-ayaz-calculator.vercel.app/ is hosted on
+Vercel ([`docs/architecture.md`](docs/architecture.md) says why). Vercel is set
+up on its website, not in this repo, and how it is set up is not recorded here.
 For a failing test to stop a deploy, Vercel's build command has to be
 `npm run build`; nothing in the repo enforces that.
 
@@ -119,15 +121,15 @@ For a failing test to stop a deploy, Vercel's build command has to be
 
 ### The `transcripts/` folder
 
-`session-01.md` and `session-02.md` are transcripts of the first two AI
-sessions on this project. They are kept as a record of how the decisions were
-made.
+`session-01.md`, `session-02.md` and `session-03.md` are transcripts of the
+three AI sessions on this project so far. They are kept as a record of how the
+decisions were made.
 
 ## How it was built, and the AI tools used
 
 It was built with **Claude Code**, Anthropic's command-line AI tool, which was
 the only AI tool used. The models shown in the transcripts are Opus 5
-(session 1), and Opus 5.5 and Sonnet 5.5 (session 2).
+(session 1), Opus 5.5 and Sonnet 5.5 (session 2), and Sonnet 5.5 (session 3).
 
 The working rule is in `CLAUDE.md`: the owner owns the spec and the testing, and
 the AI owns the implementation. The AI does not write app code until the
